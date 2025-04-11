@@ -1,14 +1,12 @@
+# netlify.toml for static HTML/CSS/JS site
 [build]
-  command = "npm run build"
-  publish = ".next"
+  # No build command needed for static HTML
+  publish = "."
 
-[build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
+# Simple redirects for SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  # Only redirect URLs that don't point to existing files
+  force = false
