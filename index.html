@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatApp - Welcome</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-icons@0.363.0/dist/umd/lucide.min.css">
+</head>
+<body class="bg-gray-900 text-white">
+  <main class="flex min-h-screen flex-col items-center justify-center p-4">
+    <div class="card w-full max-w-md bg-gray-800 border-gray-700">
+      <div class="card-header">
+        <h1 class="card-title text-2xl font-bold text-center text-white">Welcome to ChatApp</h1>
+        <p class="card-description text-center text-gray-400">Connect with others in real-time</p>
+      </div>
+      <div class="card-content">
+        <form id="loginForm" class="space-y-4">
+          <div class="space-y-2">
+            <label for="username" class="text-sm font-medium text-gray-300">Choose a username</label>
+            <input 
+              id="username" 
+              name="username" 
+              placeholder="Enter your username" 
+              required 
+              class="input bg-gray-700 border-gray-600 text-white placeholder-gray-400 w-full"
+            >
+          </div>
+          <button type="submit" class="button w-full bg-purple-600 hover:bg-purple-700">Join Chat</button>
+        </form>
+      </div>
+      <div class="card-footer text-center text-xs text-gray-400">
+        By joining, you agree to our Terms of Service and Privacy Policy
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      
+      if (username) {
+        // Store username in localStorage
+        localStorage.setItem('chatUsername', username);
+        
+        // Store login time
+        localStorage.setItem('chatLoginTime', new Date().toLocaleTimeString([], { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        }));
+        
+        // Redirect to chat page
+        window.location.href = 'chat.html';
+      }
+    });
+  </script>
+</body>
+</html>

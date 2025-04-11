@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatApp</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.363.0/dist/umd/lucide.min.js"></script>
+</head>
+<body class="bg-gray-900 text-white">
+  <div class="flex h-screen">
+    <!-- Channel Sidebar -->
+    <div class="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+      <div class="p-4 border-b border-gray-700">
+        <h2 class="text-xl font-bold">Channels</h2>
+      </div>
+      <div class="flex-1 overflow-y-auto" id="channelList">
+        <!-- Channels will be added here by JavaScript -->
+      </div>
+      <div class="p-4 border-t border-gray-700">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-gray-300">
+            <span class="font-semibold text-purple-400" id="currentUsername">Anonymous</span>
+          </span>
+          <button id="logoutButton" class="button-ghost text-gray-300 hover:text-white">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="flex-1 flex flex-col">
+      <header class="flex items-center p-4 bg-gray-800 border-b border-gray-700">
+        <i data-lucide="hash" class="w-5 h-5 mr-2 text-gray-400"></i>
+        <h1 class="text-xl font-bold capitalize" id="currentChannel">general</h1>
+      </header>
+
+      <div class="flex-1 overflow-y-auto p-4 space-y-4" id="messageContainer">
+        <!-- Messages will be added here by JavaScript -->
+      </div>
+
+      <form id="messageForm" class="p-4 border-t border-gray-700 bg-gray-800">
+        <div id="replyContainer" class="hidden flex items-center justify-between mb-2 px-3 py-2 bg-gray-700 rounded text-sm">
+          <div class="flex items-center text-gray-300">
+            <i data-lucide="reply" class="w-4 h-4 mr-2"></i>
+            <span id="replyingToText">Replying to User</span>
+          </div>
+          <button type="button" id="cancelReplyButton" class="button-ghost h-6 w-6">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="flex gap-2">
+          <input 
+            id="messageInput" 
+            placeholder="Message #general..." 
+            class="input bg-gray-700 border-gray-600 text-white placeholder-gray-400 flex-1"
+          >
+          <button type="submit" class="button-icon bg-purple-600 hover:bg-purple-700">
+            <i data-lucide="send" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Online Users Sidebar -->
+    <div class="w-64 bg-gray-800 border-l border-gray-700 flex flex-col">
+      <div class="p-4 border-b border-gray-700 flex items-center">
+        <i data-lucide="users" class="w-5 h-5 mr-2 text-gray-400"></i>
+        <h2 class="text-lg font-bold">Online Users</h2>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4" id="onlineUsersContainer">
+        <!-- Online users will be added here by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Templates (hidden) -->
+  <template id="channelTemplate">
+    <button class="channel-button flex items-center w-full px-4 py-2 text-left hover:bg-gray-700 transition-colors">
+      <i data-lucide="hash" class="w-5 h-5 mr-2 text-gray-400"></i>
+      <span class="capitalize">channel-name</span>
+    </button>
+  </template>
+
+  <template id="messageTemplate">
+    <div class="message-container group">
+      <div class="reply-info hidden flex items-center ml-6 mb-1 text-xs text-gray-400">
+        <i data-lucide="reply" class="w-3 h-3 mr-1"></i>
+        <span>Replying to </span>
+        <span class="reply-username font-medium ml-1">Username</span>
+        <span class="mx-1">•</span>
+        <span class="reply-content italic truncate max-w-[200px]">Message content</span>
+      </div>
+      <div class="message flex flex-col rounded-lg p-3 bg-gray-700 text-white max-w-[80%]">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <span class="message-username font-semibold text-sm">Username</span>
+          <span class="message-time text-xs opacity-70">12:00 PM</span>
+        </div>
+        <p class="message-content">Message content</p>
+        <div class="reactions-container flex flex-wrap gap-1 mt-2 hidden"></div>
+      </div>
+      <div class="message-actions flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div class="emoji-popup-container relative">
+          <button class="emoji-button button-ghost-icon h-7 w-7 rounded-full">
+            <i data-lucide="smile" class="w-4 h-4 text-gray-400"></i>
+          </button>
+          <div class="emoji-popup hidden absolute bottom-full left-0 mb-2 p-2 bg-gray-800 border border-gray-700 rounded shadow-lg z-10">
+            <div class="flex gap-1 emoji-list">
+              <!-- Emojis will be added here by JavaScript -->
+            </div>
+          </div>
+        </div>
+        <button class="reply-button button-ghost-icon h-7 w-7 rounded-full">
+          <i data-lucide="reply" class="w-4 h-4 text-gray-400"></i>
+        </button>
+        <div class="more-options-container relative hidden">
+          <button class="more-button button-ghost-icon h-7 w-7 rounded-full">
+            <i data-lucide="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+          </button>
+          <div class="more-popup hidden absolute bottom-full right-0 mb-2 bg-gray-800 border border-gray-700 rounded shadow-lg z-10">
+            <button class="delete-button flex items-center w-full px-3 py-2 text-left text-red-400 hover:bg-gray-700">
+              <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>
+              Delete message
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="reactionTemplate">
+    <button class="reaction flex items-center text-xs px-2 py-1 rounded-full bg-gray-600/50 text-white/80">
+      <span class="reaction-emoji mr-1">👍</span>
+      <span class="reaction-count">1</span>
+    </button>
+  </template>
+
+  <template id="onlineUserTemplate">
+    <div class="flex flex-col p-3 bg-gray-700 rounded-lg mb-4">
+      <div class="flex items-center mb-2">
+        <div class="relative mr-3">
+          <div class="avatar h-10 w-10 bg-purple-600 rounded-full flex items-center justify-center">
+            <span class="avatar-text text-white font-medium">UN</span>
+          </div>
+          <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-gray-800"></span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-medium user-name">Username</span>
+          <span class="text-xs text-green-400">Online</span>
+        </div>
+      </div>
+      <div class="text-xs text-gray-400 mt-1 online-time">Online since 12:00 PM</div>
+    </div>
+  </template>
+
+  <script src="chat.js"></script>
+</body>
+</html>
